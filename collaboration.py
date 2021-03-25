@@ -71,6 +71,7 @@ class CollaborativeTrainer(ExtendableTrainer):
         self.collaboration_args = collaboration_args
         self.matchmaking_prefix = collaboration_args.dht_key_for_averaging + '_matchmaking'
         self.training_progess_key = collaboration_args.dht_key_for_averaging + '_progress'
+        self.my_progess_key = 'my_progress'
 
         self.dht, self.averager = self.initialize_dht_and_averager(collaboration_args)
 
@@ -126,6 +127,11 @@ class CollaborativeTrainer(ExtendableTrainer):
                 logger.info(f"Running optimizer step {self.local_step}")
                 for tensor in self.model.parameters():
                     tensor.grad[...] /= self.local_steps_accumulated
+
+                my_info = [self.local_step, self.local_samples_accumulated, tr_loss, hivemind.get_dht_time()]
+                self.dht.store(self.my_progess_key, subkey=self.trainer_uuid, value=my_info,
+                               expiration_time=hivemind.get_dht_time() + self.collaboration_args.metadata_expiration,
+                               return_future=True)
 
                 average_tr_loss = self.averager_step(tr_loss)
                 tr_loss = self.optimizer_step(epoch, step, average_tr_loss, trial, steps_in_epoch)

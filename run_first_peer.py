@@ -35,5 +35,5 @@ if __name__ == '__main__':
     dht = hivemind.DHT(start=True, listen_on=args.listen_on, endpoint=f"{args.address}:*")
     print(f"Running DHT root at {args.address}:{dht.port}", flush=True)
     while True:
-        dht.get(uuid.uuid4().bytes, latest=True)
+        print(dht.get('my_progress', latest=True))
         time.sleep(args.refresh_period)
