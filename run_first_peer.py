@@ -33,25 +33,27 @@ if __name__ == '__main__':
             print("Could not infer network address, please specify --address manually.")
             exit(-1)
 
-    wandb.init(project="anon-demo",
-               anonymous="allow", )
+    wandb.init(project="Demo-run" )
 
     dht = hivemind.DHT(start=True, listen_on=args.listen_on, endpoint=f"{args.address}:*")
     print(f"Running DHT root at {args.address}:{dht.port}", flush=True)
+    t = -1
     while True:
         u = dht.get('my_progress', latest=True)
         if not u is None:
             u = u.value
             c = [u[a].value for a in u]
             p = max(c)[0]
-            den = 0
-            num = 0
-            for a, b in c:
-                if a == p:
-                    num += b
-                    den += 1
-            wandb.log({
-                "loss": num / den
-            })
+            if p!=t:
+                p = t
+                den = 0
+                num = 0
+                for a, b in c:
+                    if a == p:
+                        num += b
+                        den += 1
+                wandb.log({
+                    "loss": num / den
+                })
             print("""TTTTTTT""", num / den, flush=True)
         time.sleep(args.refresh_period)
