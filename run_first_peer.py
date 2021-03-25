@@ -44,8 +44,8 @@ if __name__ == '__main__':
             u = u.value
             c = [u[a].value for a in u]
             p = max(c)[0]
-            if p!=t:
-                p = t
+            if p != t:
+                t = p
                 den = 0
                 num = 0
                 for a, b in c:
