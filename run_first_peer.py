@@ -39,17 +39,19 @@ if __name__ == '__main__':
     dht = hivemind.DHT(start=True, listen_on=args.listen_on, endpoint=f"{args.address}:*")
     print(f"Running DHT root at {args.address}:{dht.port}", flush=True)
     while True:
-        u = dht.get('my_progress', latest=True).values
-        c = [a.value for a in u]
-        p = max(c)[0]
-        den = 0
-        num = 0
-        for a, b in c:
-            if a == p:
-                num += b
-                den += 1
-        wandb.log({
-            "loss": num / den
-        })
-        print("""TTTTTTT""", num / den, flush=True)
+        u = dht.get('my_progress', latest=True)
+        if not u is None:
+            u = u.values
+            c = [a.value for a in u]
+            p = max(c)[0]
+            den = 0
+            num = 0
+            for a, b in c:
+                if a == p:
+                    num += b
+                    den += 1
+            wandb.log({
+                "loss": num / den
+            })
+            print("""TTTTTTT""", num / den, flush=True)
         time.sleep(args.refresh_period)
