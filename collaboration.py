@@ -23,7 +23,8 @@ class CollaborationArguments:
     dht_key_for_averaging: str = 'colab_wikitext'  # a unique identifier of this experimental run's metadata
     averaging_expiration: float = 5.0  # averaging group will expire after this many seconds
     averaging_step_timeout: float = 30.0  # give up averaging step after this many seconds
-    metadata_expiration: float = 15  # peer's metadata will be removed if not updated in this many seconds
+    metadata_expiration: float = 30  # peer's metadata will be removed if not updated in this many seconds
+    statistics_expiration: float = 1000  # statistics will be removed if not updated in this many seconds
     target_group_size: int = 64      # maximum group size for all-reduce
     target_batch_size: int = 4096  # perform optimizer step after all peers collectively accumulate this many samples
     dht_listen_on: str = '[::]:*'  # network interface used for incoming DHT communication. Default: all ipv6
@@ -128,9 +129,9 @@ class CollaborativeTrainer(ExtendableTrainer):
                 for tensor in self.model.parameters():
                     tensor.grad[...] /= self.local_steps_accumulated
 
-                my_info = [self.local_step, self.local_samples_accumulated, tr_loss.item(), hivemind.get_dht_time()]
+                my_info = [self.local_step, tr_loss.item()/self.local_steps_accumulated]
                 self.dht.store(self.my_progess_key, subkey=self.trainer_uuid, value=my_info,
-                               expiration_time=hivemind.get_dht_time() + 1000,
+                               expiration_time=hivemind.get_dht_time() + self.collaboration_args.statistics_expiration,
                                return_future=True)
 
                 average_tr_loss = self.averager_step(tr_loss)
