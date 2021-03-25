@@ -36,7 +36,6 @@ if __name__ == '__main__':
     print("AAAAA")
     print(f"Running DHT root at {args.address}:{dht.port}", flush=True)
     while True:
-        print("UUUUUU")
-        print(dht.get('my_progress', latest=True))
+        print(dht.get('my_progress', latest=True), flush=True)
         time.sleep(args.refresh_period)
-        print("""TTTTTTT""")
+        print("""TTTTTTT""", flush=True)
