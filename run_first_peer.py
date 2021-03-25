@@ -42,7 +42,7 @@ if __name__ == '__main__':
         u = dht.get('my_progress', latest=True)
         if not u is None:
             u = u.value
-            c = [a.value for a in u]
+            c = [u[a].value for a in u]
             p = max(c)[0]
             den = 0
             num = 0
