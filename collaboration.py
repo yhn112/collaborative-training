@@ -223,16 +223,8 @@ class CollaborativeTrainer(ExtendableTrainer):
 
         num_peers = len(valid_peer_states)
         num_clients = sum(is_client for *_, is_client in valid_peer_states)
-
-        global_optimizer_step = self.local_step
-        try:
-            for peer in valid_peer_states:
-                if isinstance(peer, (tuple, list)) and isinstance(peer[0], int) and isinstance(peer[-1], bool):
-                    if not peer[-1]: # not is_client
-                        global_optimizer_step = max(global_optimizer_step, peer[0])
-        except:
-            pass
-
+        global_optimizer_step = max(self.local_step, *(step for step, *_, is_client in
+                                                       valid_peer_states if not is_client))
         total_samples_accumulated = estimated_curent_samples = total_samples_per_second = 0
 
         for opt_step, samples_accumulated, samples_per_second, timestep, is_client in valid_peer_states:
@@ -262,12 +254,10 @@ class CollaborativeTrainer(ExtendableTrainer):
         Periodically check the training progress from all peers. Trigger update after target_batch_size total samples
         """
         while self.is_alive:
-            try:
-                with self.lock:
-                    self.collaboration_state = self.fetch_collaboration_state()
-                time.sleep(max(0, self.collaboration_state.next_fetch_time - hivemind.get_dht_time()))
-            except Exception as e:
-                logger.warning(repr(e))
+            with self.lock:
+                self.collaboration_state = self.fetch_collaboration_state()
+            time.sleep(max(0, self.collaboration_state.next_fetch_time - hivemind.get_dht_time()))
+
     def get_train_dataloader(self):
         """ ensure that each worker will have a different (random) batch order """
         torch.manual_seed(hash(self.trainer_uuid))
