@@ -129,6 +129,11 @@ class CollaborativeTrainer(ExtendableTrainer):
                 for tensor in self.model.parameters():
                     tensor.grad[...] /= self.local_steps_accumulated
 
+                my_info = [self.local_step, tr_loss.item()/self.local_steps_accumulated]
+                self.dht.store(self.my_progess_key, subkey=self.trainer_uuid, value=my_info,
+                               expiration_time=hivemind.get_dht_time() + self.collaboration_args.statistics_expiration,
+                               return_future=True)
+
                 average_tr_loss = self.averager_step(tr_loss)
                 tr_loss = self.optimizer_step(epoch, step, average_tr_loss, trial, steps_in_epoch)
                 self.local_samples_accumulated = self.local_steps_accumulated = 0
