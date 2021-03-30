@@ -3,9 +3,10 @@ import os
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Optional
-from apex.optimizers import FusedLAMB
 
 import transformers
+from apex.optimizers import FusedLAMB
+
 from datasets import load_from_disk
 from transformers import (set_seed, HfArgumentParser, TrainingArguments,
                           DataCollatorForLanguageModeling, AlbertTokenizerFast, AlbertConfig, AlbertForPreTraining)
