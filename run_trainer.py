@@ -120,6 +120,7 @@ def main():
         lr=training_args.learning_rate,
         betas=(training_args.adam_beta1, training_args.adam_beta2),
         eps=training_args.adam_epsilon,
+        clamp_value=10000,
     )
 
     lr_scheduler = get_linear_schedule_with_warmup(
