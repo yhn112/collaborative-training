@@ -42,7 +42,7 @@ class AlbertTrainingArguments(TrainingArguments):
     warmup_steps: int = 5000
     adam_epsilon: float = 1e-6
     weight_decay: float = 0.01
-    max_grad_norm: float = 10.0
+    max_grad_norm: float = 1.0
 
     fp16: bool = True
     fp16_opt_level: str = 'O2'

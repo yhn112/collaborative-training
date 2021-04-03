@@ -134,8 +134,6 @@ class CollaborativeTrainer(ExtendableTrainer):
                                expiration_time=hivemind.get_dht_time() + self.collaboration_args.statistics_expiration,
                                return_future=True)
                 
-                torch.nn.utils.clip_grad_norm_(self.model.parameters(), 1.0)
-
 
                 average_tr_loss = self.averager_step(tr_loss)
                 tr_loss = self.optimizer_step(epoch, step, average_tr_loss, trial, steps_in_epoch)
