@@ -38,7 +38,7 @@ class AlbertTrainingArguments(TrainingArguments):
     seq_length: int = 512
 
     max_steps: int = 1_000_000  # Albert is actually ready after 125000 steps
-    learning_rate: float = 0.00176
+    learning_rate: float = 0.003
     warmup_steps: int = 5000
     adam_epsilon: float = 1e-6
     weight_decay: float = 0.01
