@@ -23,7 +23,7 @@ class DatasetArguments:
     tokenizer_path: Optional[str] = field(default='./data/tokenizer',
                                           metadata={"help": "Path to the tokenizer"})
     config_path: Optional[str] = field(
-        default='./data/albert_config_xxlarge.json',
+        default='./data/albert_config_large.json',
         metadata={"help": "Path to the model config"})
     cache_dir: Optional[str] = field(default='./data', metadata={"help": "Path to the cache"})
 
@@ -31,9 +31,9 @@ class DatasetArguments:
 @dataclass
 class AlbertTrainingArguments(TrainingArguments):
     dataloader_num_workers: int = 8
-    per_device_train_batch_size: int = 1
-    per_device_eval_batch_size: int = 1
-    gradient_accumulation_steps: int = 8
+    per_device_train_batch_size: int = 4
+    per_device_eval_batch_size: int = 4
+    gradient_accumulation_steps: int = 2
     # ^-- note: this isn't NOT the number of accumulation steps for each parameter update, see CollaborativeTrainer
     seq_length: int = 512
 
