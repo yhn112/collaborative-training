@@ -31,14 +31,14 @@ class DatasetArguments:
 @dataclass
 class AlbertTrainingArguments(TrainingArguments):
     dataloader_num_workers: int = 8
-    per_device_train_batch_size: int = 1
-    per_device_eval_batch_size: int = 1
-    gradient_accumulation_steps: int = 8
+    per_device_train_batch_size: int = 2
+    per_device_eval_batch_size: int = 2
+    gradient_accumulation_steps: int = 4
     # ^-- note: this isn't NOT the number of accumulation steps for each parameter update, see CollaborativeTrainer
     seq_length: int = 512
 
     max_steps: int = 1_000_000  # Albert is actually ready after 125000 steps
-    learning_rate: float = 0.003
+    learning_rate: float = 0.00176
     warmup_steps: int = 5000
     adam_epsilon: float = 1e-6
     weight_decay: float = 0.01
