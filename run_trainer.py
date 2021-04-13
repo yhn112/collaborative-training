@@ -31,9 +31,9 @@ class DatasetArguments:
 @dataclass
 class AlbertTrainingArguments(TrainingArguments):
     dataloader_num_workers: int = 8
-    per_device_train_batch_size: int = 4
-    per_device_eval_batch_size: int = 4
-    gradient_accumulation_steps: int = 2
+    per_device_train_batch_size: int = 1
+    per_device_eval_batch_size: int = 1
+    gradient_accumulation_steps: int = 8
     # ^-- note: this isn't NOT the number of accumulation steps for each parameter update, see CollaborativeTrainer
     seq_length: int = 512
 
@@ -129,8 +129,8 @@ def main():
 
     trainer = CollaborativeTrainer(
         model=model, args=training_args, collaboration_args=collaboration_args,
-        train_dataset=tokenized_datasets["train"] if training_args.do_train else None,
-        eval_dataset=tokenized_datasets["validation"] if training_args.do_eval else None,
+        train_dataset=tokenized_datasets if training_args.do_train else None,
+        eval_dataset=None,
         tokenizer=tokenizer,
         data_collator=data_collator,
         optimizers=(optimizer, lr_scheduler)
